@@ -359,117 +359,117 @@ def show_judgement(submission_url, cfg):
         time.sleep(0.25)
 
 
-# def main():
-#     parser = argparse.ArgumentParser(prog='kattis', description='Submit a solution to Kattis')
-#     parser.add_argument('-p', '--problem',
-#                         help=''''Which problem to submit to.
-# Overrides default guess (first part of first filename)''')
-#     parser.add_argument('-m', '--mainclass',
-#                         help='''Sets mainclass.
-# Overrides default guess (first part of first filename)''')
-#     parser.add_argument('-l', '--language',
-#                         help='''Sets language.
-# Overrides default guess (based on suffix of first filename)''')
-#     parser.add_argument('-t', '--tag',
-#                         help=argparse.SUPPRESS)
-#     parser.add_argument('-f', '--force',
-#                         help='Force, no confirmation prompt before submission',
-#                         action='store_true')
-#     parser.add_argument('files', nargs='+')
+def main():
+    parser = argparse.ArgumentParser(prog='kattis', description='Submit a solution to Kattis')
+    parser.add_argument('-p', '--problem',
+                        help=''''Which problem to submit to.
+Overrides default guess (first part of first filename)''')
+    parser.add_argument('-m', '--mainclass',
+                        help='''Sets mainclass.
+Overrides default guess (first part of first filename)''')
+    parser.add_argument('-l', '--language',
+                        help='''Sets language.
+Overrides default guess (based on suffix of first filename)''')
+    parser.add_argument('-t', '--tag',
+                        help=argparse.SUPPRESS)
+    parser.add_argument('-f', '--force',
+                        help='Force, no confirmation prompt before submission',
+                        action='store_true')
+    parser.add_argument('files', nargs='+')
 
-#     args = parser.parse_args()
-#     files = args.files
+    args = parser.parse_args()
+    files = args.files
 
-#     try:
-#         cfg = get_config()
-#     except ConfigError as exc:
-#         print(exc)
-#         sys.exit(1)
+    try:
+        cfg = get_config()
+    except ConfigError as exc:
+        print(exc)
+        sys.exit(1)
 
-#     problem, ext = os.path.splitext(os.path.basename(files[0]))
-#     language = guess_language(ext, files)
-#     mainclass = guess_mainclass(language, files)
-#     tag = args.tag
+    problem, ext = os.path.splitext(os.path.basename(files[0]))
+    language = guess_language(ext, files)
+    mainclass = guess_mainclass(language, files)
+    tag = args.tag
 
-#     problem = problem.lower()
+    problem = problem.lower()
 
-#     if args.problem:
-#         problem = args.problem
+    if args.problem:
+        problem = args.problem
 
-#     if args.mainclass is not None:
-#         mainclass = args.mainclass
+    if args.mainclass is not None:
+        mainclass = args.mainclass
 
-#     if args.language:
-#         language = args.language
+    if args.language:
+        language = args.language
 
-#     if language is None:
-#         print('''\
-# No language specified, and I failed to guess language from filename
-# extension "%s"''' % (ext,))
-#         sys.exit(1)
+    if language is None:
+        print('''\
+No language specified, and I failed to guess language from filename
+extension "%s"''' % (ext,))
+        sys.exit(1)
 
-#     files = sorted(list(set(args.files)))
+    files = sorted(list(set(args.files)))
 
-#     try:
-#         login_reply = login_from_config(cfg)
-#     except ConfigError as exc:
-#         print(exc)
-#         sys.exit(1)
-#     except requests.exceptions.RequestException as err:
-#         print('Login connection failed:', err)
-#         sys.exit(1)
+    try:
+        login_reply = login_from_config(cfg)
+    except ConfigError as exc:
+        print(exc)
+        sys.exit(1)
+    except requests.exceptions.RequestException as err:
+        print('Login connection failed:', err)
+        sys.exit(1)
 
-#     if not login_reply.status_code == 200:
-#         print('Login failed.')
-#         if login_reply.status_code == 403:
-#             print('Incorrect username or password/token (403)')
-#         elif login_reply.status_code == 404:
-#             print('Incorrect login URL (404)')
-#         else:
-#             print('Status code:', login_reply.status_code)
-#         sys.exit(1)
+    if not login_reply.status_code == 200:
+        print('Login failed.')
+        if login_reply.status_code == 403:
+            print('Incorrect username or password/token (403)')
+        elif login_reply.status_code == 404:
+            print('Incorrect login URL (404)')
+        else:
+            print('Status code:', login_reply.status_code)
+        sys.exit(1)
 
-#     submit_url = get_url(cfg, 'submissionurl', 'submit')
+    submit_url = get_url(cfg, 'submissionurl', 'submit')
 
-#     if not args.force:
-#         confirm_or_die(problem, language, files, mainclass, tag)
+    if not args.force:
+        confirm_or_die(problem, language, files, mainclass, tag)
 
-#     try:
-#         result = submit(submit_url,
-#                         login_reply.cookies,
-#                         problem,
-#                         language,
-#                         files,
-#                         mainclass,
-#                         tag)
-#     except requests.exceptions.RequestException as err:
-#         print('Submit connection failed:', err)
-#         sys.exit(1)
+    try:
+        result = submit(submit_url,
+                        login_reply.cookies,
+                        problem,
+                        language,
+                        files,
+                        mainclass,
+                        tag)
+    except requests.exceptions.RequestException as err:
+        print('Submit connection failed:', err)
+        sys.exit(1)
 
-#     if result.status_code != 200:
-#         print('Submission failed.')
-#         if result.status_code == 403:
-#             print('Access denied (403)')
-#         elif result.status_code == 404:
-#             print('Incorrect submit URL (404)')
-#         else:
-#             print('Status code:', result.status_code)
-#         sys.exit(1)
+    if result.status_code != 200:
+        print('Submission failed.')
+        if result.status_code == 403:
+            print('Access denied (403)')
+        elif result.status_code == 404:
+            print('Incorrect submit URL (404)')
+        else:
+            print('Status code:', result.status_code)
+        sys.exit(1)
 
-#     plain_result = result.content.decode('utf-8').replace('<br />', '\n')
-#     print(plain_result)
+    plain_result = result.content.decode('utf-8').replace('<br />', '\n')
+    print(plain_result)
 
-#     submission_url = None
-#     try:
-#         submission_url = get_submission_url(plain_result, cfg)
-#     except configparser.NoOptionError:
-#         pass
+    submission_url = None
+    try:
+        submission_url = get_submission_url(plain_result, cfg)
+    except configparser.NoOptionError:
+        pass
 
-#     if submission_url:
-#         print(submission_url)
-#         if not show_judgement(submission_url, cfg):
-#             sys.exit(1)
+    if submission_url:
+        print(submission_url)
+        if not show_judgement(submission_url, cfg):
+            sys.exit(1)
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

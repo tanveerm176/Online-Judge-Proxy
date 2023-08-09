@@ -1,15 +1,13 @@
 
 import submit 
 import sys
+from requests import cookies
+import os
 
 #define class to handle kattis login
 class KattisClient:
 
-    # studentConfig : configparser = get_config()
-
-
     def __init__(self) -> None:
-        #store student username, token at the init of class
         self.studentConfig = submit.get_config()
         self.token = self.studentConfig.get("user", "token")
         self.userName = self.studentConfig.get("user", "username")
@@ -19,12 +17,38 @@ class KattisClient:
         self.multiSubmissionUrl = self.studentConfig.get("kattis", "submissionsurl")
         self.cookies = self.__getCookies()
 
-    def __getCookies(self):
-        #get cookies form successful login to be used in submission
+    #get cookies form successful login to be used in submission
+    def __getCookies(self) -> cookies:
         response = submit.login_from_config(self.studentConfig)
-
-        # if err != None:
-        #     print(err)
-        #     raise SystemExit(1)
         
         return response.cookies
+
+    def get_problem_name(self, files) -> str:
+        problemName, ext = os.path.splitext(os.path.basename(files[0]))
+
+        file_language = submit.guess_language(ext, files=files)
+        file_mainclass = submit.guess_mainclass(file_language, files)
+
+        problemName = problemName.lower()
+
+        return problemName
+    
+    #TODO: remove language param from submit_problem and set language default in submit functions
+    #TODO: implement problem exists check?
+    def submit_problem(self, problemID, files, language = "Python 3"):
+
+        submit.confirm_or_die(problem=problemID, language=language, files=files, mainclass='', tag='')
+
+        result = submit.submit(submit_url=self.singleSubmissionUrl, cookies=self.cookies, problem=problemID, 
+                      files=files, language=language)
+    
+        plain_result = result.content.decode('utf-8').replace('<br />', '\n')
+
+        submission_url = submit.get_submission_url(plain_result, self.studentConfig)
+        print(submission_url)
+        #TODO: if submission_url == None problem name is wrong, exit system
+
+        judgement=submit.show_judgement(submission_url, self.studentConfig)
+        
+        return
+
