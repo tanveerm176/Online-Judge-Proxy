@@ -15,9 +15,9 @@ def main():
     #TODO: need to add fucntionality for this flag
     parser.add_argument('-c','--client', help="which client to use")
 
-    parser.add_argument("problemID", help="Enter the problem ID", type=str)
+    parser.add_argument("-id","--problemID", help="Enter the problem ID", type=str, required=True)
 
-    #TODO: increase number of files 
+    #TODO: add functionality for submitting multiple files
     parser.add_argument("files", nargs='+')
 
     args = parser.parse_args()
