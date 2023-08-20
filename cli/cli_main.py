@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 import sys
 from pathlib import Path
-from KattisClient import KattisClient
+from .KattisClient import KattisClient
 import argparse
 import os
 

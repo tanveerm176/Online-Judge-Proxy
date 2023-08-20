@@ -1,5 +1,5 @@
 
-import submit 
+from . import submit 
 import sys
 from requests import cookies
 import os
