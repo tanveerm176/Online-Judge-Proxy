@@ -23,15 +23,15 @@ class KattisClient:
         
         return response.cookies
 
-    def get_problem_name(self, files) -> str:
-        problemName, ext = os.path.splitext(os.path.basename(files[0]))
+    def get_problem_id(self, files) -> str:
+        problemID, ext = os.path.splitext(os.path.basename(files[0]))
 
         file_language = submit.guess_language(ext, files=files)
         file_mainclass = submit.guess_mainclass(file_language, files)
 
-        problemName = problemName.lower()
+        problemID = problemID.lower()
 
-        return problemName
+        return problemID
     
     #TODO: remove language param from submit_problem and set language default in submit functions
     #TODO: implement problem exists check?
@@ -45,9 +45,11 @@ class KattisClient:
         plain_result = result.content.decode('utf-8').replace('<br />', '\n')
 
         submission_url = submit.get_submission_url(plain_result, self.studentConfig)
-        print(submission_url)
-        #TODO: if submission_url == None problem name is wrong, exit system
-
+        if submission_url == None:
+            sys.exit("Problem Not Found")
+        
+        print(f"Submission URL: {submission_url}")
+    
         judgement=submit.show_judgement(submission_url, self.studentConfig)
         
         return

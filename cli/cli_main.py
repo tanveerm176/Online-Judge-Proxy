@@ -14,7 +14,7 @@ def main():
     #TODO: need to add fucntionality for this flag
     parser.add_argument('-c','--client', help="which client to use")
 
-    parser.add_argument("-id","--problemID", help="Enter the problem ID", type=str, required=True)
+    parser.add_argument("-id","--problemID", help="Enter the problem ID", type=str)
 
     #TODO: add functionality for submitting multiple files
     parser.add_argument("files", nargs='+')
@@ -24,8 +24,10 @@ def main():
     files = args.files
     files = sorted(list(set(args.files)))
 
-    # problemName = kattis.get_problem_name(files)
-    problemID = args.problemID
+    if not args.problemID:
+        problemID = kattis.get_problem_id(files)
+    else:
+        problemID = args.problemID
 
     kattis.submit_problem(problemID, files=files)
     return
