@@ -1,11 +1,15 @@
 import sys
 from pathlib import Path
 from .KattisClient import KattisClient
+from .CodeforcesClient import CodeforcesClient
 import argparse
 import os
 
+
 #note: do we want this to be cont. running
 def main():
+    cf = CodeforcesClient()
+
     kattis = KattisClient()
 
     #create parser
@@ -16,20 +20,26 @@ def main():
 
     parser.add_argument("-id","--problemID", help="Enter the problem ID", type=str)
 
-    #TODO: add functionality for submitting multiple files
     parser.add_argument("file", nargs=1)
 
     args = parser.parse_args()
 
+    platform = args.platform
+
     files = args.file
-    files = sorted(list(set(args.files)))
+    files = sorted(list(set(args.file)))
 
     if not args.problemID:
         problemID = kattis.get_problem_id(files)
     else:
         problemID = args.problemID
 
-    kattis.submit_problem(problemID, files=files)
+    if platform == "codeforces":
+        cf.submit(files[0], problemID)  
+    
+    else:
+        kattis.submit_problem(problemID, files=files)
+
     return
 
 
