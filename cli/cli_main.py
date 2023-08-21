@@ -12,16 +12,16 @@ def main():
     parser = argparse.ArgumentParser(prog='Online Judge Proxy', description='Submit a solution to Kattis, CodeForces, or LeetCode')
 
     #TODO: need to add fucntionality for this flag
-    parser.add_argument('-c','--client', help="which client to use")
+    parser.add_argument('-p','--platform', help="which platform to submit to")
 
     parser.add_argument("-id","--problemID", help="Enter the problem ID", type=str)
 
     #TODO: add functionality for submitting multiple files
-    parser.add_argument("files", nargs='+')
+    parser.add_argument("file", nargs=1)
 
     args = parser.parse_args()
 
-    files = args.files
+    files = args.file
     files = sorted(list(set(args.files)))
 
     if not args.problemID:
